@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: shivamanimes
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_APP
+        value: app.py
+      - key: OWNER_EMAIL
+        value: sakshamranjan7@gmail.com
+      - key: UPLOAD_FOLDER
+        value: uploads
