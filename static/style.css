@@ -1,0 +1,7 @@
+body{font-family:Arial,Helvetica,sans-serif; margin:20px}
+header{display:flex; justify-content:space-between; align-items:center;}
+.grid{display:flex;flex-wrap:wrap;gap:12px}
+.card{border:1px solid #ddd;padding:12px;border-radius:6px;width:300px}
+#flashes li {list-style:none;padding:6px;margin:6px 0;border-radius:4px}
+#flashes li.success{background:#e6ffed}
+#flashes li.danger{background:#ffe6e6}
