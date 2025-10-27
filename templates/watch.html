@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{{ content.title or content.filename }}</h2>
+  <p>{{ content.description }}</p>
+
+  <!-- Video player: streaming endpoint called with token header via fetch to avoid showing direct link -->
+  <div id="player-area">
+    <video id="videoPlayer" controls playsinline webkit-playsinline style="max-width:100%;height:auto">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <script>
+    // We will fetch the stream endpoint with token in header to avoid showing the direct URL in markup.
+    (async function(){
+      const contentId = {{ content.id }};
+      // token is passed by the page load through rendered template? We will get from window.location.search
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      if(!token){
+        alert('Missing token.');
+        return;
+      }
+      // Request the streaming URL (same origin), but send token as header in fetch to avoid link copy showing token in DOM
+      const streamUrl = `/stream/${contentId}`;
+      try {
+        // create a blob URL and assign to video src for playback via browser
+        const resp = await fetch(streamUrl + `?token=${token}`, { headers: { 'X-Stream-Token': token }});
+        if(!resp.ok) { alert('Cannot play the video (token expired?)'); return; }
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const v = document.getElementById('videoPlayer');
+        v.src = url;
+        // revoke blob after some time to free memory
+        v.onended = () => { URL.revokeObjectURL(url); }
+      } catch(err){
+        console.error(err);
+        alert('Playback error.');
+      }
+    })();
+  </script>
+{% endblock %}
